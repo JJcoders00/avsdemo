@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="en-US" class="no-js">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Home - Adhiyaman Public School</title>
+<meta name="description" content="Value Based Education. We empower APS students to grow into empathetic, resilient, and independent critical thinkers.">
+
+<!-- 
+    ADHIYAMAN PUBLIC SCHOOL - NEXT GEN HOMEPAGE
+    ===========================================
+    
+    SETUP INSTRUCTIONS:
+    1. Place this file in the root of your project folder.
+    2. Ensure the folder structure matches:
+       /wp-content/uploads/2025/10/...
+       /wp-content/uploads/2025/12/...
+    3. If images are missing, enable Dev Mode by adding ?dev=1 to the URL 
+       (e.g., index.html?dev=1) to see a log of missing paths.
+
+    FIREBASE INTEGRATION:
+    Search for "TODO: FIREBASE" in the script section at the bottom.
+    Replace the mock data fetchers with the provided Firestore patterns.
+-->
+
+<style>
+    /* --- RESET & VARIABLES --- */
+    :root {
+        --primary: #2F5FEF;
+        --secondary: #1246E0;
+        --accent: #F16001;
+        --dark: #001B61;
+        --text: #576070;
+        --light: #F3F9FF;
+        --white: #ffffff;
+        --border-radius: 16px;
+        --font-main: 'Inter', sans-serif; /* Fallback system fonts used if local not found */
+        --ease-out-expo: cubic-bezier(0.19, 1, 0.22, 1);
+        --ease-elastic: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; font-size: 16px; }
+    body { 
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        color: var(--text); 
+        background: var(--white); 
+        overflow-x: hidden; 
+        line-height: 1.6;
+    }
+
+    /* --- TYPOGRAPHY --- */
+    h1, h2, h3, h4, h5, h6 { color: var(--dark); line-height: 1.2; font-weight: 700; letter-spacing: -0.02em; }
+    h1 { font-size: clamp(2.5rem, 5vw, 4.5rem); }
+    h2 { font-size: clamp(2rem, 4vw, 3rem); margin-bottom: 1rem; }
+    h3 { font-size: 1.5rem; margin-bottom: 0.5rem; }
+    p { margin-bottom: 1.5rem; max-width: 65ch; }
+    a { color: inherit; text-decoration: none; transition: color 0.3s ease; }
+    ul { list-style: none; }
+
+    /* --- UTILITIES --- */
+    .container { max-width: 1280px; margin: 0 auto; padding: 0 1.5rem; }
+    .flex { display: flex; }
+    .flex-col { flex-direction: column; }
+    .items-center { align-items: center; }
+    .justify-between { justify-content: space-between; }
+    .justify-center { justify-content: center; }
+    .gap-4 { gap: 1rem; }
+    .grid { display: grid; }
+    .hidden { display: none !important; }
+    .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); border: 0; }
+    .btn {
+        display: inline-flex; align-items: center; gap: 0.5rem;
+        padding: 1rem 2rem; border-radius: 50px; font-weight: 600;
+        background: var(--primary); color: white; border: none; cursor: pointer;
+        transition: transform 0.2s var(--ease-out-expo), box-shadow 0.2s;
+        position: relative; overflow: hidden;
+    }
+    .btn:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(47, 95, 239, 0.3); }
+    .btn:active { transform: scale(0.98); }
+    .btn::after {
+        content: ''; position: absolute; top: 50%; left: 50%; width: 0; height: 0;
+        background: rgba(255,255,255,0.2); border-radius: 50%; transform: translate(-50%, -50%);
+        transition: width 0.4s, height 0.4s;
+    }
+    .btn:hover::after { width: 300px; height: 300px; }
+    .btn-outline { background: transparent; border: 2px solid var(--primary); color: var(--primary); }
+    .btn-outline:hover { background: var(--primary); color: white; }
+
+    /* --- ANIMATION BASE CLASSES --- */
+    .reveal-on-scroll { opacity: 0; transform: translateY(30px); transition: opacity 0.8s var(--ease-out-expo), transform 0.8s var(--ease-out-expo); }
+    .reveal-on-scroll.is-visible { opacity: 1; transform: translateY(0); }
+    .stagger-1 { transition-delay: 0.1s; }
+    .stagger-2 { transition-delay: 0.2s; }
+    .stagger-3 { transition-delay: 0.3s; }
+
+    /* --- HEADER --- */
+    header {
+        position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+        background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px);
+        border-bottom: 1px solid rgba(0,0,0,0.05); transition: padding 0.3s ease;
+    }
+    header.scrolled { padding: 0.5rem 0; box-shadow: 0 5px 20px rgba(0,0,0,0.05); }
+    .nav-inner { height: 80px; display: flex; align-items: center; justify-content: space-between; }
+    .logo img { height: 60px; width: auto; transition: transform 0.3s; }
+    .logo:hover img { transform: scale(1.05); }
+    
+    .nav-links { display: flex; gap: 2rem; }
+    .nav-links a { font-weight: 500; font-size: 0.95rem; position: relative; }
+    .nav-links a::after {
+        content: ''; position: absolute; bottom: -4px; left: 0; width: 0; height: 2px;
+        background: var(--accent); transition: width 0.3s ease;
+    }
+    .nav-links a:hover::after { width: 100%; }
+    
+    /* Scroll Progress */
+    .scroll-progress { position: absolute; bottom: 0; left: 0; height: 3px; background: var(--accent); width: 0%; transition: width 0.1s linear; }
+
+    /* --- HERO SECTION --- */
+    .hero {
+        position: relative; height: 100vh; min-height: 600px;
+        display: flex; align-items: center; justify-content: center;
+        overflow: hidden; color: white;
+    }
+    .hero-bg {
+        position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
+    }
+    .hero-bg video, .hero-bg img {
+        width: 100%; height: 100%; object-fit: cover; opacity: 0; animation: fadeIn 1s forwards;
+    }
+    .hero-overlay {
+        position: absolute; inset: 0; background: linear-gradient(45deg, rgba(0,27,97,0.8), rgba(47,95,239,0.4));
+        z-index: 0;
+    }
+    .hero-content {
+        position: relative; z-index: 2; text-align: center; padding: 2rem;
+        transform: translateY(20px); opacity: 0; animation: heroEnter 1s 0.5s forwards var(--ease-out-expo);
+    }
+    .hero-title {
+        font-size: clamp(3rem, 8vw, 6rem); margin-bottom: 1rem;
+        text-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        /* Parallax text effect handled by JS */
+    }
+    .hero-subtitle {
+        font-size: 1.25rem; margin-bottom: 2rem; opacity: 0.9;
+        font-weight: 300; letter-spacing: 1px; text-transform: uppercase;
+    }
+
+    /* --- PARTICLE SYSTEM --- */
+    #particles {
+        position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none;
+    }
+
+    /* --- CARDS SECTION --- */
+    .section-cards { padding: 5rem 0; margin-top: -80px; position: relative; z-index: 10; }
+    .card-grid {
+        display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;
+    }
+    .info-card {
+        background: white; padding: 2rem; border-radius: var(--border-radius);
+        box-shadow: 0 15px 40px rgba(0,0,0,0.08);
+        transition: transform 0.3s, box-shadow 0.3s;
+        border-bottom: 4px solid transparent;
+        display: flex; align-items: flex-start; gap: 1rem;
+        transform-style: preserve-3d; /* For 3D tilt */
+    }
+    .info-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 25px 50px rgba(47, 95, 239, 0.15);
+        border-bottom-color: var(--accent);
+    }
+    .card-icon {
+        width: 60px; height: 60px; flex-shrink: 0;
+        background: var(--light); border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    }
+    .card-icon img { width: 32px; height: auto; }
+
+    /* --- ABOUT SECTION --- */
+    .section-about { padding: 6rem 0; background: #fff; }
+    .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; }
+    .about-img-wrapper {
+        position: relative; border-radius: 20px; overflow: hidden;
+        box-shadow: 20px 20px 0 var(--light);
+    }
+    .about-img-wrapper img { width: 100%; display: block; transition: transform 0.5s; }
+    .about-img-wrapper:hover img { transform: scale(1.05); }
+
+    /* --- STATS COUNTERS --- */
+    .section-stats { padding: 4rem 0; background: var(--light); }
+    .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem; text-align: center; }
+    .stat-item h3 { font-size: 3rem; color: var(--primary); margin: 0; }
+    .stat-item p { font-weight: 500; color: var(--text); }
+
+    /* --- GALLERY MARQUEE --- */
+    .section-gallery { padding: 6rem 0; overflow: hidden; background: white; }
+    .marquee-wrapper { display: flex; gap: 1rem; margin-top: 2rem; width: 100%; }
+    .marquee-track {
+        display: flex; gap: 1rem; 
+        animation: scrollLeft 40s linear infinite;
+        width: max-content;
+    }
+    .marquee-item {
+        width: 300px; height: 200px; border-radius: 12px; overflow: hidden; flex-shrink: 0;
+    }
+    .marquee-item img { width: 100%; height: 100%; object-fit: cover; }
+    .marquee-wrapper:hover .marquee-track { animation-play-state: paused; }
+
+    /* --- NOTICES TICKER --- */
+    .ticker-wrap {
+        background: var(--dark); color: white; padding: 0.8rem 0; overflow: hidden;
+        position: relative;
+    }
+    .ticker-content {
+        display: flex; gap: 3rem; width: max-content;
+        animation: ticker 20s linear infinite;
+    }
+    .ticker-item { white-space: nowrap; font-weight: 500; }
+    .ticker-item span { color: var(--accent); margin-right: 0.5rem; }
+
+    /* --- FOOTER --- */
+    footer { background: #0b1120; color: white; padding: 4rem 0 2rem; }
+    .footer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 3rem; }
+    .footer-col h4 { color: white; margin-bottom: 1.5rem; font-size: 1.25rem; }
+    .footer-links li { margin-bottom: 0.8rem; }
+    .footer-links a { color: #9ca3af; }
+    .footer-links a:hover { color: var(--accent); padding-left: 5px; }
+    .copyright { text-align: center; margin-top: 4rem; padding-top: 2rem; border-top: 1px solid rgba(255,255,255,0.1); color: #6b7280; font-size: 0.9rem; }
+
+    /* --- DEV & ADMIN PANELS --- */
+    .dev-panel {
+        position: fixed; bottom: 1rem; left: 1rem; background: rgba(0,0,0,0.8);
+        color: #ff4444; padding: 1rem; border-radius: 8px; z-index: 9999;
+        font-family: monospace; font-size: 12px; max-width: 300px; max-height: 200px; overflow: auto;
+        display: none;
+    }
+    .admin-stub { display: none; } /* Hidden by default */
+
+    /* --- MOBILE NAV --- */
+    .mobile-toggle { display: none; font-size: 1.5rem; background: none; border: none; cursor: pointer; color: var(--dark); }
+    .mobile-overlay {
+        position: fixed; inset: 0; background: white; z-index: 999;
+        display: flex; flex-direction: column; align-items: center; justify-content: center;
+        transform: translateY(-100%); transition: transform 0.4s var(--ease-elastic);
+    }
+    .mobile-overlay.active { transform: translateY(0); }
+    .mobile-overlay a { font-size: 2rem; margin: 1rem 0; color: var(--dark); font-weight: 700; }
+
+    /* --- KEYFRAMES --- */
+    @keyframes fadeIn { to { opacity: 1; } }
+    @keyframes heroEnter { to { opacity: 1; transform: translateY(0); } }
+    @keyframes scrollLeft { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+    @keyframes ticker { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
+
+    /* --- MEDIA QUERIES --- */
+    @media (max-width: 768px) {
+        .nav-links { display: none; }
+        .mobile-toggle { display: block; }
+        .about-grid { grid-template-columns: 1fr; }
+        .card-grid { grid-template-columns: 1fr; }
+        h1 { font-size: 2.5rem; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
+        .marquee-track, .ticker-content { animation: none; transform: none; flex-wrap: wrap; }
+    }
+</style>
+</head>
+<body>
+
+    <!-- DEV PANEL -->
+    <div id="dev-panel" class="dev-panel">
+        <strong>Missing Assets Log:</strong>
+        <ul id="missing-list"></ul>
+    </div>
+
+    <!-- SKIP LINK -->
+    <a href="#main-content" class="btn btn-outline" style="position:fixed; top:-100px; left:10px; z-index:9999; background:white;" onfocus="this.style.top='10px'" onblur="this.style.top='-100px'">Skip to Content</a>
+
+    <!-- HEADER -->
+    <header id="header">
+        <div class="scroll-progress" id="scroll-progress"></div>
+        <div class="container nav-inner">
+            <a href="#" class="logo">
+                <!-- Using extracted path -->
+                <img src="/wp-content/uploads/2025/10/logoadhiyaman.png" alt="Adhiyaman Public School Logo" onerror="handleImageError(this)">
+            </a>
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="#">Home</a></li>
+                    <li><a href="#about">About</a></li>
+                    <li><a href="#approach">Our Approach</a></li>
+                    <li><a href="#life">Campus Life</a></li>
+                    <li><a href="#admissions">Admission</a></li>
+                    <li><a href="#contact" class="btn">Contact Us</a></li>
+                </ul>
+            </nav>
+            <button class="mobile-toggle" aria-label="Toggle Menu">☰</button>
+        </div>
+    </header>
+
+    <!-- MOBILE OVERLAY -->
+    <div class="mobile-overlay" id="mobile-menu">
+        <button class="mobile-toggle" style="position:absolute; top:20px; right:20px;">✕</button>
+        <a href="#">Home</a>
+        <a href="#about">About</a>
+        <a href="#approach">Academics</a>
+        <a href="#admissions">Admission</a>
+        <a href="#contact">Contact</a>
+    </div>
+
+    <main id="main-content">
+        <!-- HERO SECTION -->
+        <section class="hero">
+            <div class="hero-bg">
+                <video autoplay muted loop playsinline poster="/wp-content/uploads/2025/10/CAM06667-scaled.jpg">
+                    <source src="/wp-content/uploads/2025/10/Intro.mp4" type="video/mp4">
+                </video>
+                <div class="hero-overlay"></div>
+            </div>
+            <!-- CANVAS PARTICLES -->
+            <canvas id="particles"></canvas>
+            
+            <div class="hero-content">
+                <h2 class="hero-subtitle">Adhiyaman Public School</h2>
+                <h1 class="hero-title" id="hero-heading">Knowledge is Power</h1>
+                <div class="flex gap-4 justify-center">
+                    <a href="#admissions" class="btn">Admission Open</a>
+                    <a href="#contact" class="btn btn-outline" style="color:white; border-color:white;">Enquire Now</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- NOTICES TICKER -->
+        <div class="ticker-wrap" aria-label="Announcements" role="marquee">
+            <div class="ticker-content" id="notices-ticker">
+                <!-- Populated by JS -->
+                <div class="ticker-item"><span>NEW</span> Admission Open for 2025-2026</div>
+                <div class="ticker-item"><span>EVENT</span> Annual Sports Day - Dec 20</div>
+                <div class="ticker-item"><span>UPDATE</span> Check out our new Digital Classrooms</div>
+            </div>
+        </div>
+
+        <!-- CARDS SECTION -->
+        <section class="section-cards container">
+            <div class="card-grid">
+                <div class="info-card reveal-on-scroll stagger-1" tabindex="0">
+                    <div class="card-icon">
+                        <img src="/wp-content/uploads/2025/10/specialist-icon5.png" alt="" onerror="handleImageError(this)">
+                    </div>
+                    <div>
+                        <h3>Value Based Education</h3>
+                        <p>We empower APS students to grow into empathetic, resilient, and independent critical thinkers.</p>
+                    </div>
+                </div>
+                <div class="info-card reveal-on-scroll stagger-2" tabindex="0">
+                    <div class="card-icon">
+                        <img src="/wp-content/uploads/2025/10/category-icon2-1.png" alt="" onerror="handleImageError(this)">
+                    </div>
+                    <div>
+                        <h3>Health And Hygiene</h3>
+                        <p>APS ensures student health with strict cleanliness, staff training, area supervision, and continuous hygiene programs.</p>
+                    </div>
+                </div>
+                <div class="info-card reveal-on-scroll stagger-3" tabindex="0">
+                    <div class="card-icon">
+                        <img src="/wp-content/uploads/2025/10/IconBuuss.png" alt="" onerror="handleImageError(this)">
+                    </div>
+                    <div>
+                        <h3>Transportation</h3>
+                        <p>APS operates a fleet of air-conditioned buses providing pick-up and drop services within a 30km radius of Uthangarai.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ABOUT / CAMPUS -->
+        <section id="about" class="section-about container">
+            <div class="about-grid">
+                <div class="reveal-on-scroll">
+                    <h5 style="color:var(--primary); margin-bottom:1rem;">Welcome To Adhiyaman Public School</h5>
+                    <h2>Our Campus</h2>
+                    <p>The School is managed by SRINIVASA EDUCATIONAL TRUST (Regd.), Uthangarai, Krishnagiri Dt, Tamil Nadu. The verdant and beautiful 14 acre campus of Adhiyaman Public School (APS) is located just 5 minutes’ drive from Uthangarai on NH – 66 towards Bengaluru.</p>
+                    <p>The campus has been modeled to facilitate the finest educational facilities and enhance all-round development of children. Our teachers rely on Indian culture to teach our students using best physical environment and infrastructure.</p>
+                    <a href="#contact" class="btn btn-outline">Read More</a>
+                </div>
+                <div class="about-img-wrapper reveal-on-scroll stagger-2">
+                    <img src="/wp-content/uploads/2025/10/CAM06354-scaled.jpg" alt="School Campus" loading="lazy" onerror="handleImageError(this)">
+                </div>
+            </div>
+        </section>
+
+        <!-- STATS -->
+        <section class="section-stats">
+            <div class="container stats-grid" id="stats-counter">
+                <div class="stat-item reveal-on-scroll">
+                    <h3 data-target="5000">0</h3>
+                    <p>Students</p>
+                </div>
+                <div class="stat-item reveal-on-scroll stagger-1">
+                    <h3 data-target="100">0</h3>
+                    <p>Faculty</p>
+                </div>
+                <div class="stat-item reveal-on-scroll stagger-2">
+                    <h3 data-target="50">0</h3>
+                    <p>Achievements</p>
+                </div>
+                <div class="stat-item reveal-on-scroll stagger-3">
+                    <h3 data-target="20">0</h3>
+                    <p>Digital Class Rooms</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- GALLERY MARQUEE -->
+        <section id="life" class="section-gallery">
+            <div class="container text-center">
+                <h5 style="color:var(--primary);">Gallery</h5>
+                <h2>Latest Event Gallery</h2>
+            </div>
+            <div class="marquee-wrapper">
+                <div class="marquee-track" id="gallery-track">
+                    <!-- Populated by JS from content map -->
+                </div>
+                <!-- Duplicate for infinite scroll -->
+                <div class="marquee-track" aria-hidden="true" id="gallery-track-clone"></div> 
+            </div>
+        </section>
+
+        <!-- SPORTS ICONS ROW -->
+        <section class="container" style="padding: 4rem 0;">
+            <h2 class="text-center" style="margin-bottom:3rem;">Sports Activities</h2>
+            <div class="flex justify-center flex-wrap gap-4" id="sports-list">
+                <!-- Injected via JS -->
+            </div>
+        </section>
+
+        <!-- BLOG / NEWS -->
+        <section class="container" style="padding: 4rem 0;">
+            <div class="text-center mb-5">
+                <h5 style="color:var(--primary);">Latest News</h5>
+                <h2>Stay Informed, Stay Inspired</h2>
+            </div>
+            <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
+                <article class="reveal-on-scroll stagger-1">
+                    <div style="border-radius:12px; overflow:hidden; margin-bottom:1rem; height: 240px;">
+                        <img src="/wp-content/uploads/2025/10/77.jpg" style="width:100%; height:100%; object-fit:cover;" alt="Blog" loading="lazy" onerror="handleImageError(this)">
+                    </div>
+                    <h4>Navigating the Job Market: Advice for Graduates</h4>
+                    <a href="#" style="color:var(--primary); font-weight:600;">Read More →</a>
+                </article>
+                <article class="reveal-on-scroll stagger-2">
+                    <div style="border-radius:12px; overflow:hidden; margin-bottom:1rem; height: 240px;">
+                        <img src="/wp-content/uploads/2025/10/slide12.png" style="width:100%; height:100%; object-fit:cover;" alt="Blog" loading="lazy" onerror="handleImageError(this)">
+                    </div>
+                    <h4>Balancing Work and Study: Strategies</h4>
+                    <a href="#" style="color:var(--primary); font-weight:600;">Read More →</a>
+                </article>
+                <article class="reveal-on-scroll stagger-3">
+                    <div style="border-radius:12px; overflow:hidden; margin-bottom:1rem; height: 240px;">
+                        <img src="/wp-content/uploads/2025/10/aboutus11.jpg" style="width:100%; height:100%; object-fit:cover;" alt="Blog" loading="lazy" onerror="handleImageError(this)">
+                    </div>
+                    <h4>Mastering Python: Beginner to Advanced</h4>
+                    <a href="#" style="color:var(--primary); font-weight:600;">Read More →</a>
+                </article>
+            </div>
+        </section>
+
+        <!-- FOOTER -->
+        <footer id="contact">
+            <div class="container">
+                <div class="footer-grid">
+                    <div class="footer-col">
+                        <img src="/wp-content/uploads/2025/10/logoadhiyaman.png" alt="APS Logo" style="width:150px; margin-bottom:1rem; background:white; padding:10px; border-radius:8px;" onerror="handleImageError(this)">
+                        <p>Knowledge is power. Empowering students for a better tomorrow.</p>
+                    </div>
+                    <div class="footer-col footer-links">
+                        <h4>Quick Links</h4>
+                        <ul>
+                            <li><a href="#">Home</a></li>
+                            <li><a href="#">About Us</a></li>
+                            <li><a href="#">Chairman's Message</a></li>
+                            <li><a href="#">Contact Us</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-col">
+                        <h4>Contact Us</h4>
+                        <p>Adhiyaman Public School,<br>Malligai Nagar, Uthangarai – 635 207.</p>
+                        <p style="margin-top:1rem;">
+                            <strong>Email:</strong> admission@adhiyamanpublicschool.com<br>
+                            <strong>Phone:</strong> +91 93454 07633
+                        </p>
+                    </div>
+                    <div class="footer-col">
+                        <h4>Location</h4>
+                        <div style="width:100%; height:150px; background:#333; border-radius:8px; overflow:hidden;">
+                            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d4867.490780028675!2d78.51430547590314!3d12.278150629700443!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bac5c8658fea719%3A0x40c2a9ac5b92fa75!2sAdhiyaman%20Public%20School!5e1!3m2!1sen!2sin!4v1761721883397!5m2!1sen!2sin" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+                        </div>
+                    </div>
+                </div>
+                <div class="copyright">
+                    &copy; 2026 Adhiyaman Public School. All Rights Reserved.
+                </div>
+            </div>
+        </footer>
+    </main>
+
+    <!-- CONTENT MAP DATA -->
+    <script id="content-map" type="application/json">
+    {
+        "notices": [
+            { "text": "Admission Open for 2025-2026", "link": "#" },
+            { "text": "Annual Sports Day - Dec 20", "link": "#" },
+            { "text": "Check out our new Digital Classrooms", "link": "#" }
+        ],
+        "gallery": [
+            "/wp-content/uploads/2025/10/15-750x400.png",
+            "/wp-content/uploads/2025/10/6-750x400.png",
+            "/wp-content/uploads/2025/10/14-750x400.png",
+            "/wp-content/uploads/2025/10/28-750x400.png",
+            "/wp-content/uploads/2025/10/CAM06232-300x200.jpg",
+            "/wp-content/uploads/2025/10/CAM06507-300x200.jpg"
+        ],
+        "sports": [
+            "/wp-content/uploads/2025/12/Pingpong.png",
+            "/wp-content/uploads/2025/12/Shotting.png",
+            "/wp-content/uploads/2025/12/Skateboard.png",
+            "/wp-content/uploads/2025/12/Swim.png",
+            "/wp-content/uploads/2025/12/Tennis.png",
+            "/wp-content/uploads/2025/12/Football.png"
+        ],
+        "birthdays": []
+    }
+    </script>
+
+    <!-- ADMIN STUB (Commented) -->
+    <!-- 
+    <div id="admin-stub" class="container hidden">
+        <h2>Admin Dashboard (Stub)</h2>
+        <form id="noticeForm">
+            <input type="text" id="noticeTitle" placeholder="Notice Title">
+            <input type="text" id="noticeCategory" placeholder="Category">
+            <input type="date" id="noticeDate">
+            <textarea id="noticeBody" placeholder="Details"></textarea>
+            <input type="file" id="fileInput">
+            <button type="button">Upload & Save (Connect Firebase)</button>
+        </form>
+        <form id="birthdayForm">
+            <input type="text" id="bName" placeholder="Student Name">
+            <input type="text" id="bClass" placeholder="Class">
+            <input type="date" id="bDate">
+            <button type="button">Add Birthday</button>
+        </form>
+        // TODO: Wire up to Firebase Storage for file uploads and Firestore for data.
+    </div> 
+    -->
+
+    <script>
+        // --- UTILS ---
+        const $ = (selector) => document.querySelector(selector);
+        const $$ = (selector) => document.querySelectorAll(selector);
+        
+        // --- DEV MODE & ASSET LOGGING ---
+        const urlParams = new URLSearchParams(window.location.search);
+        const isDev = urlParams.get('dev') === '1' || localStorage.getItem('showMissing') === 'true';
+        const missingSet = new Set();
+
+        if (isDev) $('#dev-panel').style.display = 'block';
+
+        function handleImageError(img) {
+            img.style.display = 'none'; // Hide broken image gracefully
+            // img.src = 'placeholder.png'; // Option: Replace with placeholder
+            const path = img.getAttribute('src');
+            if (path && !missingSet.has(path)) {
+                missingSet.add(path);
+                const li = document.createElement('li');
+                li.textContent = path;
+                $('#missing-list').appendChild(li);
+                if (isDev) console.warn('Missing asset:', path);
+            }
+        }
+
+        // --- DATA LAYER ---
+        async function fetchContentMap(){ 
+            return JSON.parse(document.getElementById('content-map').textContent||'{}'); 
+        }
+        
+        async function fetchNotices(limit=6){ 
+            const map = await fetchContentMap(); 
+            return (map.notices||[]).slice(0,limit); 
+        }
+        
+        async function fetchBirthdays(date){ 
+            const map = await fetchContentMap(); 
+            return (map.birthdays||[]); 
+        }
+
+        // --- TODO: FIREBASE INTEGRATION ---
+        /*
+        // Replace the above fetch functions with this structure:
+        // Paste your firebaseConfig object here.
+        // import { initializeApp } from "firebase/app";
+        // import { getFirestore, collection, query, orderBy, getDocs } from "firebase/firestore";
+        // import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
+        
+        // const app = initializeApp(firebaseConfig);
+        // const db = getFirestore(app);
+        
+        // async function fetchNoticesFirebase() {
+        //    const q = query(collection(db, 'notices'), orderBy('date', 'desc'));
+        //    const snap = await getDocs(q);
+        //    return snap.docs.map(d => d.data());
+        // }
+        */
+
+        // --- ANIMATION ENGINE ---
+        document.addEventListener('DOMContentLoaded', async () => {
+            
+            // 1. Populate Content
+            const map = await fetchContentMap();
+            
+            // Populate Gallery
+            const galleryTrack = $('#gallery-track');
+            const galleryClone = $('#gallery-track-clone');
+            const galleryHTML = map.gallery.map(src => 
+                `<div class="marquee-item"><img src="${src}" alt="Gallery" onerror="handleImageError(this)"></div>`
+            ).join('');
+            galleryTrack.innerHTML = galleryHTML;
+            galleryClone.innerHTML = galleryHTML; // Infinite scroll effect
+
+            // Populate Sports
+            const sportsList = $('#sports-list');
+            if(map.sports) {
+                sportsList.innerHTML = map.sports.map(src => 
+                    `<img src="${src}" style="width:50px; height:auto; filter: grayscale(100%); transition: filter 0.3s;" onmouseover="this.style.filter='grayscale(0)'" onmouseout="this.style.filter='grayscale(100%)'" onerror="handleImageError(this)">`
+                ).join('');
+            }
+
+            // 2. Scroll Reveal Observer
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            $$('.reveal-on-scroll').forEach(el => observer.observe(el));
+
+            // 3. Stats Counter
+            const statsSection = $('#stats-counter');
+            let counted = false;
+            const statsObserver = new IntersectionObserver((entries) => {
+                if(entries[0].isIntersecting && !counted) {
+                    counted = true;
+                    $$('.stat-item h3').forEach(el => {
+                        const target = +el.getAttribute('data-target');
+                        let count = 0;
+                        const inc = target / 50; // Speed
+                        const updateCount = () => {
+                            count += inc;
+                            if(count < target) {
+                                el.innerText = Math.ceil(count);
+                                requestAnimationFrame(updateCount);
+                            } else {
+                                el.innerText = target;
+                            }
+                        };
+                        updateCount();
+                    });
+                }
+            });
+            if(statsSection) statsObserver.observe(statsSection);
+
+            // 4. Hero Parallax (Mouse Move)
+            const hero = $('.hero');
+            const title = $('.hero-title');
+            if(!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                hero.addEventListener('mousemove', (e) => {
+                    const x = (window.innerWidth - e.pageX * 2) / 100;
+                    const y = (window.innerHeight - e.pageY * 2) / 100;
+                    title.style.transform = `translateX(${x}px) translateY(${y}px)`;
+                });
+            }
+
+            // 5. Card 3D Tilt
+            $$('.info-card').forEach(card => {
+                card.addEventListener('mousemove', (e) => {
+                    const rect = card.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    card.style.transform = `
+                        perspective(1000px)
+                        rotateX(${-(y - rect.height/2) / 20}deg)
+                        rotateY(${(x - rect.width/2) / 20}deg)
+                        translateY(-10px)
+                    `;
+                });
+                card.addEventListener('mouseleave', () => {
+                    card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) translateY(0)';
+                });
+            });
+
+            // 6. Header Scroll Compress
+            window.addEventListener('scroll', () => {
+                const header = $('header');
+                const scrollPercent = (window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100;
+                $('#scroll-progress').style.width = scrollPercent + '%';
+                
+                if (window.scrollY > 50) {
+                    header.classList.add('scrolled');
+                } else {
+                    header.classList.remove('scrolled');
+                }
+            });
+
+            // 7. Mobile Menu
+            const mobileToggle = $$('.mobile-toggle');
+            const mobileMenu = $('#mobile-menu');
+            mobileToggle.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    mobileMenu.classList.toggle('active');
+                });
+            });
+            $$('#mobile-menu a').forEach(link => {
+                link.addEventListener('click', () => mobileMenu.classList.remove('active'));
+            });
+
+            // 8. Particle System (Canvas)
+            initParticles();
+        });
+
+        // --- PARTICLE SYSTEM LOGIC ---
+        function initParticles() {
+            const canvas = document.getElementById('particles');
+            if(!canvas) return;
+            const ctx = canvas.getContext('2d');
+            let width, height;
+            let particles = [];
+
+            function resize() {
+                width = canvas.width = window.innerWidth;
+                height = canvas.height = window.innerHeight;
+            }
+            window.addEventListener('resize', resize);
+            resize();
+
+            class Particle {
+                constructor() {
+                    this.x = Math.random() * width;
+                    this.y = Math.random() * height;
+                    this.vx = (Math.random() - 0.5) * 0.5;
+                    this.vy = (Math.random() - 0.5) * 0.5;
+                    this.size = Math.random() * 3 + 1;
+                    this.color = `rgba(255, 255, 255, ${Math.random() * 0.5})`;
+                }
+                update() {
+                    this.x += this.vx;
+                    this.y += this.vy;
+                    if(this.x < 0) this.x = width;
+                    if(this.x > width) this.x = 0;
+                    if(this.y < 0) this.y = height;
+                    if(this.y > height) this.y = 0;
+                }
+                draw() {
+                    ctx.fillStyle = this.color;
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            }
+
+            for(let i=0; i<50; i++) particles.push(new Particle());
+
+            function animate() {
+                ctx.clearRect(0, 0, width, height);
+                particles.forEach(p => {
+                    p.update();
+                    p.draw();
+                });
+                requestAnimationFrame(animate);
+            }
+            
+            // Respect reduced motion
+            if(!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                animate();
+            }
+        }
+    </script>
+</body>
+</html>
