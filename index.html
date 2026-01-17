@@ -1,790 +1,846 @@
 <!DOCTYPE html>
-<html lang="en-US" class="no-js">
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Home - Adhiyaman Public School</title>
-<meta name="description" content="Value Based Education. We empower APS students to grow into empathetic, resilient, and independent critical thinkers.">
-
-<!-- 
-    ADHIYAMAN PUBLIC SCHOOL - NEXT GEN HOMEPAGE
-    ===========================================
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adhiyaman Public School | Excellence in Education</title>
+    <meta name="description" content="A premium educational experience at Adhiyaman Public School. Empowering students, building futures.">
     
-    SETUP INSTRUCTIONS:
-    1. Place this file in the root of your project folder.
-    2. Ensure the folder structure matches:
-       /wp-content/uploads/2025/10/...
-       /wp-content/uploads/2025/12/...
-    3. If images are missing, enable Dev Mode by adding ?dev=1 to the URL 
-       (e.g., index.html?dev=1) to see a log of missing paths.
+    <style>
+        /* --- RESET & BASE --- */
+        :root {
+            --primary: #002147; /* Royal Blue */
+            --accent: #d4af37; /* Gold */
+            --secondary: #E63946; /* Vibrant Red for highlights */
+            --text: #333333;
+            --bg-light: #f8f9fa;
+            --white: #ffffff;
+            --glass: rgba(255, 255, 255, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --shadow-lg: 0 20px 40px rgba(0,0,0,0.1);
+            --font-main: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            --ease-out-expo: cubic-bezier(0.19, 1, 0.22, 1);
+        }
 
-    FIREBASE INTEGRATION:
-    Search for "TODO: FIREBASE" in the script section at the bottom.
-    Replace the mock data fetchers with the provided Firestore patterns.
--->
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; font-size: 16px; }
+        body { font-family: var(--font-main); color: var(--text); background: var(--bg-light); overflow-x: hidden; line-height: 1.6; }
+        a { text-decoration: none; color: inherit; transition: color 0.3s ease; }
+        ul { list-style: none; }
+        img, video { max-width: 100%; height: auto; display: block; }
+        button { cursor: pointer; border: none; outline: none; font-family: inherit; }
 
-<style>
-    /* --- RESET & VARIABLES --- */
-    :root {
-        --primary: #2F5FEF;
-        --secondary: #1246E0;
-        --accent: #F16001;
-        --dark: #001B61;
-        --text: #576070;
-        --light: #F3F9FF;
-        --white: #ffffff;
-        --border-radius: 16px;
-        --font-main: 'Inter', sans-serif; /* Fallback system fonts used if local not found */
-        --ease-out-expo: cubic-bezier(0.19, 1, 0.22, 1);
-        --ease-elastic: cubic-bezier(0.68, -0.55, 0.265, 1.55);
-    }
+        /* --- UTILITIES --- */
+        .container { max-width: 1400px; margin: 0 auto; padding: 0 2rem; position: relative; z-index: 2; }
+        .flex { display: flex; }
+        .flex-col { flex-direction: column; }
+        .items-center { align-items: center; }
+        .justify-between { justify-content: space-between; }
+        .justify-center { justify-content: center; }
+        .gap-4 { gap: 1rem; }
+        .gap-8 { gap: 2rem; }
+        .text-center { text-align: center; }
+        .hidden { display: none; }
+        .relative { position: relative; }
+        .absolute { position: absolute; }
+        .h-screen { height: 100vh; }
+        .w-full { width: 100%; }
+        .font-bold { font-weight: 700; }
+        .text-white { color: var(--white); }
+        .text-primary { color: var(--primary); }
+        .text-accent { color: var(--accent); }
+        
+        /* --- ANIMATION CLASSES (JS Triggered) --- */
+        .reveal { opacity: 0; transform: translateY(50px); transition: all 1s var(--ease-out-expo); }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+        
+        .reveal-left { opacity: 0; transform: translateX(-50px); transition: all 1s var(--ease-out-expo); }
+        .reveal-left.active { opacity: 1; transform: translateX(0); }
+        
+        .reveal-right { opacity: 0; transform: translateX(50px); transition: all 1s var(--ease-out-expo); }
+        .reveal-right.active { opacity: 1; transform: translateX(0); }
 
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; font-size: 16px; }
-    body { 
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-        color: var(--text); 
-        background: var(--white); 
-        overflow-x: hidden; 
-        line-height: 1.6;
-    }
+        .scale-in { opacity: 0; transform: scale(0.9); transition: all 0.8s var(--ease-out-expo); }
+        .scale-in.active { opacity: 1; transform: scale(1); }
 
-    /* --- TYPOGRAPHY --- */
-    h1, h2, h3, h4, h5, h6 { color: var(--dark); line-height: 1.2; font-weight: 700; letter-spacing: -0.02em; }
-    h1 { font-size: clamp(2.5rem, 5vw, 4.5rem); }
-    h2 { font-size: clamp(2rem, 4vw, 3rem); margin-bottom: 1rem; }
-    h3 { font-size: 1.5rem; margin-bottom: 0.5rem; }
-    p { margin-bottom: 1.5rem; max-width: 65ch; }
-    a { color: inherit; text-decoration: none; transition: color 0.3s ease; }
-    ul { list-style: none; }
+        /* --- HEADER & NAV --- */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            transition: all 0.4s ease;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent);
+        }
+        header.scrolled {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            padding: 0.5rem 0;
+        }
+        header.scrolled .nav-link { color: var(--primary); }
+        header.scrolled .logo-text { color: var(--primary); }
+        
+        .nav-container { display: flex; justify-content: space-between; align-items: center; padding: 1.5rem 0; transition: padding 0.4s ease; }
+        .logo { display: flex; align-items: center; gap: 1rem; z-index: 1001; }
+        .logo img { height: 60px; width: auto; transition: transform 0.3s ease; }
+        .logo:hover img { transform: rotate(5deg) scale(1.05); }
+        .logo-text { font-size: 1.5rem; font-weight: 800; color: var(--white); text-transform: uppercase; letter-spacing: 1px; }
+        
+        .nav-links { display: flex; gap: 2rem; }
+        .nav-link { 
+            color: var(--white); 
+            font-weight: 500; 
+            font-size: 1rem; 
+            position: relative; 
+            padding: 0.5rem 0;
+        }
+        .nav-link::after {
+            content: ''; position: absolute; bottom: 0; left: 0; width: 0; height: 2px;
+            background: var(--accent); transition: width 0.3s ease;
+        }
+        .nav-link:hover::after { width: 100%; }
 
-    /* --- UTILITIES --- */
-    .container { max-width: 1280px; margin: 0 auto; padding: 0 1.5rem; }
-    .flex { display: flex; }
-    .flex-col { flex-direction: column; }
-    .items-center { align-items: center; }
-    .justify-between { justify-content: space-between; }
-    .justify-center { justify-content: center; }
-    .gap-4 { gap: 1rem; }
-    .grid { display: grid; }
-    .hidden { display: none !important; }
-    .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); border: 0; }
-    .btn {
-        display: inline-flex; align-items: center; gap: 0.5rem;
-        padding: 1rem 2rem; border-radius: 50px; font-weight: 600;
-        background: var(--primary); color: white; border: none; cursor: pointer;
-        transition: transform 0.2s var(--ease-out-expo), box-shadow 0.2s;
-        position: relative; overflow: hidden;
-    }
-    .btn:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(47, 95, 239, 0.3); }
-    .btn:active { transform: scale(0.98); }
-    .btn::after {
-        content: ''; position: absolute; top: 50%; left: 50%; width: 0; height: 0;
-        background: rgba(255,255,255,0.2); border-radius: 50%; transform: translate(-50%, -50%);
-        transition: width 0.4s, height 0.4s;
-    }
-    .btn:hover::after { width: 300px; height: 300px; }
-    .btn-outline { background: transparent; border: 2px solid var(--primary); color: var(--primary); }
-    .btn-outline:hover { background: var(--primary); color: white; }
+        /* Mobile Menu */
+        .menu-toggle { display: none; flex-direction: column; gap: 6px; cursor: pointer; z-index: 1002; }
+        .bar { width: 30px; height: 3px; background: var(--accent); transition: 0.3s; }
+        .mobile-nav {
+            position: fixed; top: 0; right: -100%; width: 100%; height: 100vh;
+            background: var(--primary); display: flex; flex-direction: column;
+            justify-content: center; align-items: center; gap: 2rem;
+            transition: 0.5s var(--ease-out-expo); z-index: 999;
+        }
+        .mobile-nav.active { right: 0; }
+        .mobile-nav a { font-size: 2rem; color: var(--white); }
 
-    /* --- ANIMATION BASE CLASSES --- */
-    .reveal-on-scroll { opacity: 0; transform: translateY(30px); transition: opacity 0.8s var(--ease-out-expo), transform 0.8s var(--ease-out-expo); }
-    .reveal-on-scroll.is-visible { opacity: 1; transform: translateY(0); }
-    .stagger-1 { transition-delay: 0.1s; }
-    .stagger-2 { transition-delay: 0.2s; }
-    .stagger-3 { transition-delay: 0.3s; }
+        /* --- HERO SECTION --- */
+        .hero {
+            position: relative;
+            height: 100vh;
+            width: 100%;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .hero-video {
+            position: absolute;
+            top: 50%; left: 50%;
+            width: 100%; height: 100%;
+            min-width: 100%; min-height: 100%;
+            object-fit: cover;
+            transform: translate(-50%, -50%);
+            z-index: 0;
+        }
+        .hero-overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(45deg, rgba(0,33,71,0.8), rgba(0,0,0,0.4));
+            z-index: 1;
+        }
+        .hero-content {
+            z-index: 2;
+            text-align: center;
+            color: var(--white);
+            max-width: 900px;
+        }
+        .hero-subtitle {
+            font-size: 1.5rem;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            margin-bottom: 1rem;
+            opacity: 0;
+            animation: slideUp 1s forwards 0.5s;
+        }
+        .hero-title {
+            font-size: 5rem;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 2rem;
+            opacity: 0;
+            animation: slideUp 1s forwards 0.8s;
+        }
+        .hero-btn {
+            padding: 1rem 3rem;
+            background: var(--accent);
+            color: var(--primary);
+            font-weight: 700;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            display: inline-block;
+            transition: all 0.3s ease;
+            opacity: 0;
+            animation: slideUp 1s forwards 1.1s;
+            position: relative;
+            overflow: hidden;
+        }
+        .hero-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(212, 175, 55, 0.4);
+            background: var(--white);
+        }
+        
+        /* --- NOTICES & UPDATES HUB --- */
+        .hub-section {
+            margin-top: -100px;
+            position: relative;
+            z-index: 10;
+            margin-bottom: 5rem;
+        }
+        .hub-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+        }
+        .notice-board {
+            background: var(--white);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: var(--shadow-lg);
+            border-top: 5px solid var(--accent);
+            height: 500px;
+            overflow: hidden;
+            position: relative;
+        }
+        .hub-title { font-size: 1.8rem; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 10px; }
+        .hub-title svg { width: 30px; fill: var(--secondary); }
+        
+        .tab-nav { display: flex; gap: 1rem; border-bottom: 1px solid #eee; margin-bottom: 1rem; overflow-x: auto; }
+        .tab-btn {
+            padding: 0.5rem 1rem;
+            background: transparent;
+            font-weight: 600;
+            color: #888;
+            border-bottom: 3px solid transparent;
+            transition: 0.3s;
+            white-space: nowrap;
+        }
+        .tab-btn.active { color: var(--primary); border-color: var(--primary); }
+        
+        .tab-content { display: none; height: 350px; overflow-y: auto; padding-right: 10px; }
+        .tab-content.active { display: block; animation: fadeIn 0.5s; }
+        
+        .notice-item {
+            padding: 1rem;
+            border-bottom: 1px solid #f0f0f0;
+            transition: 0.3s;
+            cursor: pointer;
+            display: flex;
+            gap: 1rem;
+            align-items: flex-start;
+        }
+        .notice-item:hover { background: #f9f9fa; transform: translateX(5px); }
+        .notice-date {
+            background: var(--primary);
+            color: var(--white);
+            padding: 5px 10px;
+            border-radius: 8px;
+            text-align: center;
+            min-width: 60px;
+        }
+        .notice-date span { display: block; font-size: 0.8rem; }
+        .notice-date strong { display: block; font-size: 1.2rem; line-height: 1; }
+        
+        /* Birthday Card */
+        .birthday-card {
+            background: linear-gradient(135deg, #FF9A9E 0%, #FECFEF 99%, #FECFEF 100%);
+            border-radius: 20px;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: var(--shadow-lg);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 500px;
+        }
+        .bd-img-container {
+            width: 150px; height: 150px;
+            border-radius: 50%;
+            border: 5px solid var(--white);
+            overflow: hidden;
+            margin: 0 auto 1.5rem;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            position: relative;
+            z-index: 2;
+        }
+        .bd-img-container img { width: 100%; height: 100%; object-fit: cover; }
+        .bd-title { font-family: 'Brush Script MT', cursive; font-size: 2.5rem; color: #fff; text-shadow: 2px 2px 4px rgba(0,0,0,0.1); }
+        .bd-name { font-size: 1.5rem; font-weight: 700; color: var(--primary); margin-bottom: 0.5rem; }
+        .bd-class { font-size: 1rem; color: #555; background: rgba(255,255,255,0.6); padding: 5px 15px; border-radius: 20px; }
+        
+        /* Confetti Canvas */
+        #confetti-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; }
 
-    /* --- HEADER --- */
-    header {
-        position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
-        background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px);
-        border-bottom: 1px solid rgba(0,0,0,0.05); transition: padding 0.3s ease;
-    }
-    header.scrolled { padding: 0.5rem 0; box-shadow: 0 5px 20px rgba(0,0,0,0.05); }
-    .nav-inner { height: 80px; display: flex; align-items: center; justify-content: space-between; }
-    .logo img { height: 60px; width: auto; transition: transform 0.3s; }
-    .logo:hover img { transform: scale(1.05); }
-    
-    .nav-links { display: flex; gap: 2rem; }
-    .nav-links a { font-weight: 500; font-size: 0.95rem; position: relative; }
-    .nav-links a::after {
-        content: ''; position: absolute; bottom: -4px; left: 0; width: 0; height: 2px;
-        background: var(--accent); transition: width 0.3s ease;
-    }
-    .nav-links a:hover::after { width: 100%; }
-    
-    /* Scroll Progress */
-    .scroll-progress { position: absolute; bottom: 0; left: 0; height: 3px; background: var(--accent); width: 0%; transition: width 0.1s linear; }
+        /* --- FEATURES / CARDS --- */
+        .features { padding: 5rem 0; background: var(--white); }
+        .section-header { text-align: center; margin-bottom: 4rem; }
+        .section-tag { color: var(--secondary); font-weight: 700; text-transform: uppercase; letter-spacing: 2px; font-size: 0.9rem; }
+        .section-title { font-size: 2.5rem; color: var(--primary); margin-top: 0.5rem; }
+        
+        .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; }
+        
+        .feature-card {
+            background: var(--bg-light);
+            border-radius: 15px;
+            overflow: hidden;
+            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 1px solid transparent;
+        }
+        .feature-card:hover {
+            transform: translateY(-15px);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.1);
+            border-color: var(--accent);
+        }
+        .feature-icon {
+            font-size: 3rem;
+            margin: 2rem;
+            color: var(--primary);
+        }
+        .feature-text { padding: 0 2rem 2rem; }
+        .feature-text h3 { margin-bottom: 1rem; }
 
-    /* --- HERO SECTION --- */
-    .hero {
-        position: relative; height: 100vh; min-height: 600px;
-        display: flex; align-items: center; justify-content: center;
-        overflow: hidden; color: white;
-    }
-    .hero-bg {
-        position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
-    }
-    .hero-bg video, .hero-bg img {
-        width: 100%; height: 100%; object-fit: cover; opacity: 0; animation: fadeIn 1s forwards;
-    }
-    .hero-overlay {
-        position: absolute; inset: 0; background: linear-gradient(45deg, rgba(0,27,97,0.8), rgba(47,95,239,0.4));
-        z-index: 0;
-    }
-    .hero-content {
-        position: relative; z-index: 2; text-align: center; padding: 2rem;
-        transform: translateY(20px); opacity: 0; animation: heroEnter 1s 0.5s forwards var(--ease-out-expo);
-    }
-    .hero-title {
-        font-size: clamp(3rem, 8vw, 6rem); margin-bottom: 1rem;
-        text-shadow: 0 10px 30px rgba(0,0,0,0.3);
-        /* Parallax text effect handled by JS */
-    }
-    .hero-subtitle {
-        font-size: 1.25rem; margin-bottom: 2rem; opacity: 0.9;
-        font-weight: 300; letter-spacing: 1px; text-transform: uppercase;
-    }
+        /* --- STATS SECTION --- */
+        .stats-section {
+            padding: 5rem 0;
+            background: var(--primary);
+            color: var(--white);
+            position: relative;
+            overflow: hidden;
+        }
+        .stats-bg-pattern {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background-image: radial-gradient(circle at 2px 2px, rgba(255,255,255,0.1) 1px, transparent 0);
+            background-size: 40px 40px;
+            opacity: 0.5;
+        }
+        .stat-item { text-align: center; position: relative; z-index: 2; }
+        .stat-number { font-size: 4rem; font-weight: 800; color: var(--accent); line-height: 1; margin-bottom: 0.5rem; }
+        .stat-label { font-size: 1.2rem; opacity: 0.9; }
 
-    /* --- PARTICLE SYSTEM --- */
-    #particles {
-        position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none;
-    }
+        /* --- GALLERY --- */
+        .gallery-section { padding: 5rem 0; }
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-auto-rows: 250px;
+            gap: 15px;
+        }
+        .gallery-item {
+            position: relative;
+            overflow: hidden;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+        .gallery-item:nth-child(1) { grid-column: span 2; grid-row: span 2; }
+        .gallery-item:nth-child(4) { grid-column: span 2; }
+        
+        .gallery-item img {
+            width: 100%; height: 100%; object-fit: cover;
+            transition: transform 0.6s ease;
+        }
+        .gallery-overlay {
+            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 33, 71, 0.7);
+            display: flex; justify-content: center; align-items: center;
+            opacity: 0; transition: 0.4s ease;
+        }
+        .gallery-icon {
+            font-size: 2rem; color: var(--white); transform: scale(0); transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .gallery-item:hover img { transform: scale(1.1); }
+        .gallery-item:hover .gallery-overlay { opacity: 1; }
+        .gallery-item:hover .gallery-icon { transform: scale(1); }
 
-    /* --- CARDS SECTION --- */
-    .section-cards { padding: 5rem 0; margin-top: -80px; position: relative; z-index: 10; }
-    .card-grid {
-        display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;
-    }
-    .info-card {
-        background: white; padding: 2rem; border-radius: var(--border-radius);
-        box-shadow: 0 15px 40px rgba(0,0,0,0.08);
-        transition: transform 0.3s, box-shadow 0.3s;
-        border-bottom: 4px solid transparent;
-        display: flex; align-items: flex-start; gap: 1rem;
-        transform-style: preserve-3d; /* For 3D tilt */
-    }
-    .info-card:hover {
-        transform: translateY(-10px);
-        box-shadow: 0 25px 50px rgba(47, 95, 239, 0.15);
-        border-bottom-color: var(--accent);
-    }
-    .card-icon {
-        width: 60px; height: 60px; flex-shrink: 0;
-        background: var(--light); border-radius: 50%; display: flex; align-items: center; justify-content: center;
-    }
-    .card-icon img { width: 32px; height: auto; }
+        /* --- FOOTER --- */
+        footer {
+            background: #0b0d17;
+            color: #aaa;
+            padding: 5rem 0 2rem;
+            font-size: 0.95rem;
+        }
+        .footer-content { display: grid; grid-template-columns: 1.5fr 1fr 1fr 1fr; gap: 3rem; margin-bottom: 3rem; }
+        .footer-col h4 { color: var(--white); font-size: 1.2rem; margin-bottom: 1.5rem; position: relative; padding-bottom: 10px; }
+        .footer-col h4::after { content: ''; position: absolute; bottom: 0; left: 0; width: 40px; height: 2px; background: var(--accent); }
+        .footer-logo img { width: 200px; margin-bottom: 1rem; filter: brightness(0) invert(1); }
+        .footer-links li { margin-bottom: 0.8rem; }
+        .footer-links a:hover { color: var(--accent); padding-left: 5px; }
+        .footer-bottom { border-top: 1px solid #222; pt: 2rem; text-align: center; margin-top: 3rem; }
 
-    /* --- ABOUT SECTION --- */
-    .section-about { padding: 6rem 0; background: #fff; }
-    .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; }
-    .about-img-wrapper {
-        position: relative; border-radius: 20px; overflow: hidden;
-        box-shadow: 20px 20px 0 var(--light);
-    }
-    .about-img-wrapper img { width: 100%; display: block; transition: transform 0.5s; }
-    .about-img-wrapper:hover img { transform: scale(1.05); }
+        /* --- LIGHTBOX --- */
+        .lightbox {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.95); z-index: 2000;
+            display: none; justify-content: center; align-items: center;
+            opacity: 0; transition: opacity 0.3s ease;
+        }
+        .lightbox.active { display: flex; opacity: 1; }
+        .lightbox-img { max-width: 90%; max-height: 80vh; box-shadow: 0 0 50px rgba(0,0,0,0.5); border: 5px solid var(--white); }
+        .lightbox-close { position: absolute; top: 30px; right: 30px; color: white; font-size: 3rem; cursor: pointer; }
 
-    /* --- STATS COUNTERS --- */
-    .section-stats { padding: 4rem 0; background: var(--light); }
-    .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem; text-align: center; }
-    .stat-item h3 { font-size: 3rem; color: var(--primary); margin: 0; }
-    .stat-item p { font-weight: 500; color: var(--text); }
+        /* --- RESPONSIVE --- */
+        @media (max-width: 1024px) {
+            .hero-title { font-size: 3.5rem; }
+            .hub-grid { grid-template-columns: 1fr; }
+            .gallery-grid { grid-template-columns: 1fr 1fr; }
+            .gallery-item:nth-child(1) { grid-column: span 1; grid-row: span 1; }
+            .gallery-item:nth-child(4) { grid-column: span 1; }
+        }
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .menu-toggle { display: flex; }
+            .hero-title { font-size: 2.5rem; }
+            .footer-content { grid-template-columns: 1fr; }
+            .notice-board { height: 400px; }
+            .hub-section { margin-top: 2rem; }
+        }
 
-    /* --- GALLERY MARQUEE --- */
-    .section-gallery { padding: 6rem 0; overflow: hidden; background: white; }
-    .marquee-wrapper { display: flex; gap: 1rem; margin-top: 2rem; width: 100%; }
-    .marquee-track {
-        display: flex; gap: 1rem; 
-        animation: scrollLeft 40s linear infinite;
-        width: max-content;
-    }
-    .marquee-item {
-        width: 300px; height: 200px; border-radius: 12px; overflow: hidden; flex-shrink: 0;
-    }
-    .marquee-item img { width: 100%; height: 100%; object-fit: cover; }
-    .marquee-wrapper:hover .marquee-track { animation-play-state: paused; }
-
-    /* --- NOTICES TICKER --- */
-    .ticker-wrap {
-        background: var(--dark); color: white; padding: 0.8rem 0; overflow: hidden;
-        position: relative;
-    }
-    .ticker-content {
-        display: flex; gap: 3rem; width: max-content;
-        animation: ticker 20s linear infinite;
-    }
-    .ticker-item { white-space: nowrap; font-weight: 500; }
-    .ticker-item span { color: var(--accent); margin-right: 0.5rem; }
-
-    /* --- FOOTER --- */
-    footer { background: #0b1120; color: white; padding: 4rem 0 2rem; }
-    .footer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 3rem; }
-    .footer-col h4 { color: white; margin-bottom: 1.5rem; font-size: 1.25rem; }
-    .footer-links li { margin-bottom: 0.8rem; }
-    .footer-links a { color: #9ca3af; }
-    .footer-links a:hover { color: var(--accent); padding-left: 5px; }
-    .copyright { text-align: center; margin-top: 4rem; padding-top: 2rem; border-top: 1px solid rgba(255,255,255,0.1); color: #6b7280; font-size: 0.9rem; }
-
-    /* --- DEV & ADMIN PANELS --- */
-    .dev-panel {
-        position: fixed; bottom: 1rem; left: 1rem; background: rgba(0,0,0,0.8);
-        color: #ff4444; padding: 1rem; border-radius: 8px; z-index: 9999;
-        font-family: monospace; font-size: 12px; max-width: 300px; max-height: 200px; overflow: auto;
-        display: none;
-    }
-    .admin-stub { display: none; } /* Hidden by default */
-
-    /* --- MOBILE NAV --- */
-    .mobile-toggle { display: none; font-size: 1.5rem; background: none; border: none; cursor: pointer; color: var(--dark); }
-    .mobile-overlay {
-        position: fixed; inset: 0; background: white; z-index: 999;
-        display: flex; flex-direction: column; align-items: center; justify-content: center;
-        transform: translateY(-100%); transition: transform 0.4s var(--ease-elastic);
-    }
-    .mobile-overlay.active { transform: translateY(0); }
-    .mobile-overlay a { font-size: 2rem; margin: 1rem 0; color: var(--dark); font-weight: 700; }
-
-    /* --- KEYFRAMES --- */
-    @keyframes fadeIn { to { opacity: 1; } }
-    @keyframes heroEnter { to { opacity: 1; transform: translateY(0); } }
-    @keyframes scrollLeft { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
-    @keyframes ticker { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
-
-    /* --- MEDIA QUERIES --- */
-    @media (max-width: 768px) {
-        .nav-links { display: none; }
-        .mobile-toggle { display: block; }
-        .about-grid { grid-template-columns: 1fr; }
-        .card-grid { grid-template-columns: 1fr; }
-        h1 { font-size: 2.5rem; }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-        *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
-        .marquee-track, .ticker-content { animation: none; transform: none; flex-wrap: wrap; }
-    }
-</style>
+        /* --- ANIMATIONS KEYFRAMES --- */
+        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes ticker { 0% { transform: translateY(0); } 100% { transform: translateY(-100%); } }
+    </style>
 </head>
 <body>
 
-    <!-- DEV PANEL -->
-    <div id="dev-panel" class="dev-panel">
-        <strong>Missing Assets Log:</strong>
-        <ul id="missing-list"></ul>
+    <!-- LIGHTBOX -->
+    <div class="lightbox" id="lightbox">
+        <span class="lightbox-close" onclick="closeLightbox()">&times;</span>
+        <img src="" alt="Gallery Image" class="lightbox-img" id="lightbox-img">
     </div>
-
-    <!-- SKIP LINK -->
-    <a href="#main-content" class="btn btn-outline" style="position:fixed; top:-100px; left:10px; z-index:9999; background:white;" onfocus="this.style.top='10px'" onblur="this.style.top='-100px'">Skip to Content</a>
 
     <!-- HEADER -->
     <header id="header">
-        <div class="scroll-progress" id="scroll-progress"></div>
-        <div class="container nav-inner">
-            <a href="#" class="logo">
-                <!-- Using extracted path -->
-                <img src="/wp-content/uploads/2025/10/logoadhiyaman.png" alt="Adhiyaman Public School Logo" onerror="handleImageError(this)">
-            </a>
-            <nav>
+        <div class="container">
+            <nav class="nav-container">
+                <a href="#" class="logo">
+                    <img src="https://adhiyamanpublicschool.com/wp-content/uploads/2025/10/logoadhiyaman.png" alt="APS Logo">
+                    <div class="logo-text">APS</div>
+                </a>
                 <ul class="nav-links">
-                    <li><a href="#">Home</a></li>
-                    <li><a href="#about">About</a></li>
-                    <li><a href="#approach">Our Approach</a></li>
-                    <li><a href="#life">Campus Life</a></li>
-                    <li><a href="#admissions">Admission</a></li>
-                    <li><a href="#contact" class="btn">Contact Us</a></li>
+                    <li><a href="#" class="nav-link">Home</a></li>
+                    <li><a href="#" class="nav-link">About Us</a></li>
+                    <li><a href="#" class="nav-link">Academics</a></li>
+                    <li><a href="#" class="nav-link">Admissions</a></li>
+                    <li><a href="#" class="nav-link">Facilities</a></li>
+                    <li><a href="#" class="nav-link">Gallery</a></li>
+                    <li><a href="#" class="nav-link" style="color: var(--accent);">Contact</a></li>
                 </ul>
+                <div class="menu-toggle" onclick="toggleMenu()">
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                </div>
             </nav>
-            <button class="mobile-toggle" aria-label="Toggle Menu">☰</button>
         </div>
     </header>
 
-    <!-- MOBILE OVERLAY -->
-    <div class="mobile-overlay" id="mobile-menu">
-        <button class="mobile-toggle" style="position:absolute; top:20px; right:20px;">✕</button>
-        <a href="#">Home</a>
-        <a href="#about">About</a>
-        <a href="#approach">Academics</a>
-        <a href="#admissions">Admission</a>
-        <a href="#contact">Contact</a>
+    <!-- MOBILE MENU -->
+    <div class="mobile-nav" id="mobileNav">
+        <a href="#" onclick="toggleMenu()">Home</a>
+        <a href="#" onclick="toggleMenu()">About</a>
+        <a href="#" onclick="toggleMenu()">Admissions</a>
+        <a href="#" onclick="toggleMenu()">Contact</a>
+        <button onclick="toggleMenu()" style="position: absolute; top: 20px; right: 20px; font-size: 2rem; color: white; background: none;">&times;</button>
     </div>
 
-    <main id="main-content">
-        <!-- HERO SECTION -->
-        <section class="hero">
-            <div class="hero-bg">
-                <video autoplay muted loop playsinline poster="/wp-content/uploads/2025/10/CAM06667-scaled.jpg">
-                    <source src="/wp-content/uploads/2025/10/Intro.mp4" type="video/mp4">
-                </video>
-                <div class="hero-overlay"></div>
-            </div>
-            <!-- CANVAS PARTICLES -->
-            <canvas id="particles"></canvas>
-            
-            <div class="hero-content">
-                <h2 class="hero-subtitle">Adhiyaman Public School</h2>
-                <h1 class="hero-title" id="hero-heading">Knowledge is Power</h1>
-                <div class="flex gap-4 justify-center">
-                    <a href="#admissions" class="btn">Admission Open</a>
-                    <a href="#contact" class="btn btn-outline" style="color:white; border-color:white;">Enquire Now</a>
+    <!-- HERO SECTION -->
+    <section class="hero">
+        <video class="hero-video" autoplay muted loop playsinline poster="https://adhiyamanpublicschool.com/wp-content/uploads/2025/10/CAM06354-scaled.jpg">
+            <source src="https://tan-parrot-923641.hostingersite.com/wp-content/uploads/2025/10/Intro.mp4" type="video/mp4">
+        </video>
+        <div class="hero-overlay"></div>
+        <div class="hero-content container">
+            <div class="hero-subtitle">Welcome to</div>
+            <h1 class="hero-title">Adhiyaman Public School</h1>
+            <p style="font-size: 1.25rem; margin-bottom: 2rem; opacity: 0; animation: slideUp 1s forwards 0.9s;">
+                Empowering students to grow into empathetic, resilient, and independent critical thinkers.
+            </p>
+            <a href="#" class="hero-btn">Admission Open 2025-26</a>
+        </div>
+    </section>
+
+    <!-- HUB SECTION (Notices, Birthdays) -->
+    <section class="container hub-section">
+        <div class="hub-grid">
+            <!-- Notices Board -->
+            <div class="notice-board reveal">
+                <div class="hub-title">
+                    <svg viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2zm-2 1H8v-6c0-2.48 1.51-4.5 4-4.5s4 2.02 4 4.5v6z"/></svg>
+                    Live Updates & Circulars
+                </div>
+                <div class="tab-nav">
+                    <button class="tab-btn active" onclick="openTab(event, 'Principal')">Principal's Desk</button>
+                    <button class="tab-btn" onclick="openTab(event, 'Circulars')">Circulars</button>
+                    <button class="tab-btn" onclick="openTab(event, 'Events')">Events</button>
+                </div>
+                
+                <div id="Principal" class="tab-content active">
+                    <div class="notice-item">
+                        <div class="notice-date"><strong>17</strong><span>JAN</span></div>
+                        <div>
+                            <h4>Morning Assembly Address</h4>
+                            <p class="text-sm text-gray">Principal discussed the importance of discipline and hygiene in daily life.</p>
+                        </div>
+                    </div>
+                    <div class="notice-item">
+                        <div class="notice-date"><strong>15</strong><span>JAN</span></div>
+                        <div>
+                            <h4>Examination Tips</h4>
+                            <p class="text-sm text-gray">Sharing strategies for the upcoming midterm examinations.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="Circulars" class="tab-content">
+                    <!-- Dynamic Content via JS -->
+                </div>
+
+                <div id="Events" class="tab-content">
+                    <!-- Dynamic Content via JS -->
                 </div>
             </div>
-        </section>
 
-        <!-- NOTICES TICKER -->
-        <div class="ticker-wrap" aria-label="Announcements" role="marquee">
-            <div class="ticker-content" id="notices-ticker">
-                <!-- Populated by JS -->
-                <div class="ticker-item"><span>NEW</span> Admission Open for 2025-2026</div>
-                <div class="ticker-item"><span>EVENT</span> Annual Sports Day - Dec 20</div>
-                <div class="ticker-item"><span>UPDATE</span> Check out our new Digital Classrooms</div>
+            <!-- Birthday Corner -->
+            <div class="birthday-card reveal-right">
+                <canvas id="confetti-canvas"></canvas>
+                <div class="hub-title" style="color: #fff; z-index: 2;">🎉 Today's Birthday</div>
+                <div id="birthday-display" style="z-index: 2; width: 100%;">
+                    <!-- Dynamic Injection -->
+                </div>
             </div>
         </div>
+    </section>
 
-        <!-- CARDS SECTION -->
-        <section class="section-cards container">
-            <div class="card-grid">
-                <div class="info-card reveal-on-scroll stagger-1" tabindex="0">
-                    <div class="card-icon">
-                        <img src="/wp-content/uploads/2025/10/specialist-icon5.png" alt="" onerror="handleImageError(this)">
-                    </div>
-                    <div>
+    <!-- FEATURES -->
+    <section class="features">
+        <div class="container">
+            <div class="section-header reveal">
+                <span class="section-tag">Why Choose APS</span>
+                <h2 class="section-title">Nurturing Excellence</h2>
+            </div>
+            <div class="grid-3">
+                <div class="feature-card reveal">
+                    <div class="feature-icon">🎓</div>
+                    <div class="feature-text">
                         <h3>Value Based Education</h3>
                         <p>We empower APS students to grow into empathetic, resilient, and independent critical thinkers.</p>
                     </div>
                 </div>
-                <div class="info-card reveal-on-scroll stagger-2" tabindex="0">
-                    <div class="card-icon">
-                        <img src="/wp-content/uploads/2025/10/category-icon2-1.png" alt="" onerror="handleImageError(this)">
-                    </div>
-                    <div>
-                        <h3>Health And Hygiene</h3>
-                        <p>APS ensures student health with strict cleanliness, staff training, area supervision, and continuous hygiene programs.</p>
+                <div class="feature-card reveal" style="transition-delay: 0.1s;">
+                    <div class="feature-icon">🏥</div>
+                    <div class="feature-text">
+                        <h3>Health & Hygiene</h3>
+                        <p>Strict cleanliness, staff training, area supervision, and continuous hygiene awareness programs.</p>
                     </div>
                 </div>
-                <div class="info-card reveal-on-scroll stagger-3" tabindex="0">
-                    <div class="card-icon">
-                        <img src="/wp-content/uploads/2025/10/IconBuuss.png" alt="" onerror="handleImageError(this)">
-                    </div>
-                    <div>
+                <div class="feature-card reveal" style="transition-delay: 0.2s;">
+                    <div class="feature-icon">🚌</div>
+                    <div class="feature-text">
                         <h3>Transportation</h3>
-                        <p>APS operates a fleet of air-conditioned buses providing pick-up and drop services within a 30km radius of Uthangarai.</p>
+                        <p>Fleet of air-conditioned buses providing pick-up and drop services within a 30km radius.</p>
                     </div>
                 </div>
             </div>
-        </section>
+        </div>
+    </section>
 
-        <!-- ABOUT / CAMPUS -->
-        <section id="about" class="section-about container">
-            <div class="about-grid">
-                <div class="reveal-on-scroll">
-                    <h5 style="color:var(--primary); margin-bottom:1rem;">Welcome To Adhiyaman Public School</h5>
-                    <h2>Our Campus</h2>
-                    <p>The School is managed by SRINIVASA EDUCATIONAL TRUST (Regd.), Uthangarai, Krishnagiri Dt, Tamil Nadu. The verdant and beautiful 14 acre campus of Adhiyaman Public School (APS) is located just 5 minutes’ drive from Uthangarai on NH – 66 towards Bengaluru.</p>
-                    <p>The campus has been modeled to facilitate the finest educational facilities and enhance all-round development of children. Our teachers rely on Indian culture to teach our students using best physical environment and infrastructure.</p>
-                    <a href="#contact" class="btn btn-outline">Read More</a>
-                </div>
-                <div class="about-img-wrapper reveal-on-scroll stagger-2">
-                    <img src="/wp-content/uploads/2025/10/CAM06354-scaled.jpg" alt="School Campus" loading="lazy" onerror="handleImageError(this)">
-                </div>
+    <!-- STATS -->
+    <section class="stats-section">
+        <div class="stats-bg-pattern"></div>
+        <div class="container flex justify-between items-center" style="flex-wrap: wrap; gap: 2rem;">
+            <div class="stat-item scale-in">
+                <div class="stat-number" data-target="2000">0</div>
+                <div class="stat-label">Happy Students</div>
             </div>
-        </section>
+            <div class="stat-item scale-in" style="transition-delay: 0.1s;">
+                <div class="stat-number" data-target="135">0</div>
+                <div class="stat-label">Expert Faculty</div>
+            </div>
+            <div class="stat-item scale-in" style="transition-delay: 0.2s;">
+                <div class="stat-number" data-target="80">0</div>
+                <div class="stat-label">Smart Classrooms</div>
+            </div>
+            <div class="stat-item scale-in" style="transition-delay: 0.3s;">
+                <div class="stat-number" data-target="14">0</div>
+                <div class="stat-label">Acres Campus</div>
+            </div>
+        </div>
+    </section>
 
-        <!-- STATS -->
-        <section class="section-stats">
-            <div class="container stats-grid" id="stats-counter">
-                <div class="stat-item reveal-on-scroll">
-                    <h3 data-target="5000">0</h3>
-                    <p>Students</p>
-                </div>
-                <div class="stat-item reveal-on-scroll stagger-1">
-                    <h3 data-target="100">0</h3>
-                    <p>Faculty</p>
-                </div>
-                <div class="stat-item reveal-on-scroll stagger-2">
-                    <h3 data-target="50">0</h3>
-                    <p>Achievements</p>
-                </div>
-                <div class="stat-item reveal-on-scroll stagger-3">
-                    <h3 data-target="20">0</h3>
-                    <p>Digital Class Rooms</p>
-                </div>
-            </div>
-        </section>
+    <!-- DYNAMIC GALLERY -->
+    <section class="gallery-section container">
+        <div class="section-header reveal">
+            <span class="section-tag">Campus Life</span>
+            <h2 class="section-title">Our Gallery</h2>
+        </div>
+        <div class="gallery-grid" id="gallery-grid">
+            <!-- Images populated by JS -->
+        </div>
+    </section>
 
-        <!-- GALLERY MARQUEE -->
-        <section id="life" class="section-gallery">
-            <div class="container text-center">
-                <h5 style="color:var(--primary);">Gallery</h5>
-                <h2>Latest Event Gallery</h2>
-            </div>
-            <div class="marquee-wrapper">
-                <div class="marquee-track" id="gallery-track">
-                    <!-- Populated by JS from content map -->
-                </div>
-                <!-- Duplicate for infinite scroll -->
-                <div class="marquee-track" aria-hidden="true" id="gallery-track-clone"></div> 
-            </div>
-        </section>
+    <!-- DOWNLOADS & LINKS -->
+    <section class="container" style="margin-bottom: 5rem;">
+        <div class="section-header reveal">
+            <h2 class="section-title">Quick Downloads</h2>
+        </div>
+        <div class="flex justify-center gap-4" style="flex-wrap: wrap;">
+            <a href="#" class="hero-btn" style="background: var(--primary); color: white;">Download Brochure</a>
+            <a href="#" class="hero-btn" style="background: var(--white); color: var(--primary); border: 2px solid var(--primary);">Academic Calendar</a>
+            <a href="#" class="hero-btn" style="background: var(--white); color: var(--primary); border: 2px solid var(--primary);">Application Form</a>
+        </div>
+    </section>
 
-        <!-- SPORTS ICONS ROW -->
-        <section class="container" style="padding: 4rem 0;">
-            <h2 class="text-center" style="margin-bottom:3rem;">Sports Activities</h2>
-            <div class="flex justify-center flex-wrap gap-4" id="sports-list">
-                <!-- Injected via JS -->
-            </div>
-        </section>
-
-        <!-- BLOG / NEWS -->
-        <section class="container" style="padding: 4rem 0;">
-            <div class="text-center mb-5">
-                <h5 style="color:var(--primary);">Latest News</h5>
-                <h2>Stay Informed, Stay Inspired</h2>
-            </div>
-            <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
-                <article class="reveal-on-scroll stagger-1">
-                    <div style="border-radius:12px; overflow:hidden; margin-bottom:1rem; height: 240px;">
-                        <img src="/wp-content/uploads/2025/10/77.jpg" style="width:100%; height:100%; object-fit:cover;" alt="Blog" loading="lazy" onerror="handleImageError(this)">
+    <!-- FOOTER -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-col">
+                    <div class="footer-logo">
+                        <img src="https://adhiyamanpublicschool.com/wp-content/uploads/2025/10/logoadhiyaman.png" alt="Logo">
                     </div>
-                    <h4>Navigating the Job Market: Advice for Graduates</h4>
-                    <a href="#" style="color:var(--primary); font-weight:600;">Read More →</a>
-                </article>
-                <article class="reveal-on-scroll stagger-2">
-                    <div style="border-radius:12px; overflow:hidden; margin-bottom:1rem; height: 240px;">
-                        <img src="/wp-content/uploads/2025/10/slide12.png" style="width:100%; height:100%; object-fit:cover;" alt="Blog" loading="lazy" onerror="handleImageError(this)">
-                    </div>
-                    <h4>Balancing Work and Study: Strategies</h4>
-                    <a href="#" style="color:var(--primary); font-weight:600;">Read More →</a>
-                </article>
-                <article class="reveal-on-scroll stagger-3">
-                    <div style="border-radius:12px; overflow:hidden; margin-bottom:1rem; height: 240px;">
-                        <img src="/wp-content/uploads/2025/10/aboutus11.jpg" style="width:100%; height:100%; object-fit:cover;" alt="Blog" loading="lazy" onerror="handleImageError(this)">
-                    </div>
-                    <h4>Mastering Python: Beginner to Advanced</h4>
-                    <a href="#" style="color:var(--primary); font-weight:600;">Read More →</a>
-                </article>
-            </div>
-        </section>
-
-        <!-- FOOTER -->
-        <footer id="contact">
-            <div class="container">
-                <div class="footer-grid">
-                    <div class="footer-col">
-                        <img src="/wp-content/uploads/2025/10/logoadhiyaman.png" alt="APS Logo" style="width:150px; margin-bottom:1rem; background:white; padding:10px; border-radius:8px;" onerror="handleImageError(this)">
-                        <p>Knowledge is power. Empowering students for a better tomorrow.</p>
-                    </div>
-                    <div class="footer-col footer-links">
-                        <h4>Quick Links</h4>
-                        <ul>
-                            <li><a href="#">Home</a></li>
-                            <li><a href="#">About Us</a></li>
-                            <li><a href="#">Chairman's Message</a></li>
-                            <li><a href="#">Contact Us</a></li>
-                        </ul>
-                    </div>
-                    <div class="footer-col">
-                        <h4>Contact Us</h4>
-                        <p>Adhiyaman Public School,<br>Malligai Nagar, Uthangarai – 635 207.</p>
-                        <p style="margin-top:1rem;">
-                            <strong>Email:</strong> admission@adhiyamanpublicschool.com<br>
-                            <strong>Phone:</strong> +91 93454 07633
-                        </p>
-                    </div>
-                    <div class="footer-col">
-                        <h4>Location</h4>
-                        <div style="width:100%; height:150px; background:#333; border-radius:8px; overflow:hidden;">
-                            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d4867.490780028675!2d78.51430547590314!3d12.278150629700443!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bac5c8658fea719%3A0x40c2a9ac5b92fa75!2sAdhiyaman%20Public%20School!5e1!3m2!1sen!2sin!4v1761721883397!5m2!1sen!2sin" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
-                        </div>
-                    </div>
+                    <p>Adhiyaman Public School, Malligai Nagar, Uthangarai – 635 207.<br>
+                    Managed by Srinivasa Educational Trust.</p>
                 </div>
-                <div class="copyright">
-                    &copy; 2026 Adhiyaman Public School. All Rights Reserved.
+                <div class="footer-col">
+                    <h4>Quick Links</h4>
+                    <ul class="footer-links">
+                        <li><a href="#">About Us</a></li>
+                        <li><a href="#">Admissions</a></li>
+                        <li><a href="#">Curriculum</a></li>
+                        <li><a href="#">Contact Us</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Facilities</h4>
+                    <ul class="footer-links">
+                        <li><a href="#">Library</a></li>
+                        <li><a href="#">Transportation</a></li>
+                        <li><a href="#">Computer Labs</a></li>
+                        <li><a href="#">Sports Arena</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Contact</h4>
+                    <ul class="footer-links">
+                        <li>Phone: +91 93454 07633</li>
+                        <li>Email: admission@adhiyamanpublicschool.com</li>
+                    </ul>
                 </div>
             </div>
-        </footer>
-    </main>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Adhiyaman Public School. All Rights Reserved.</p>
+            </div>
+        </div>
+    </footer>
 
-    <!-- CONTENT MAP DATA -->
-    <script id="content-map" type="application/json">
-    {
-        "notices": [
-            { "text": "Admission Open for 2025-2026", "link": "#" },
-            { "text": "Annual Sports Day - Dec 20", "link": "#" },
-            { "text": "Check out our new Digital Classrooms", "link": "#" }
-        ],
-        "gallery": [
-            "/wp-content/uploads/2025/10/15-750x400.png",
-            "/wp-content/uploads/2025/10/6-750x400.png",
-            "/wp-content/uploads/2025/10/14-750x400.png",
-            "/wp-content/uploads/2025/10/28-750x400.png",
-            "/wp-content/uploads/2025/10/CAM06232-300x200.jpg",
-            "/wp-content/uploads/2025/10/CAM06507-300x200.jpg"
-        ],
-        "sports": [
-            "/wp-content/uploads/2025/12/Pingpong.png",
-            "/wp-content/uploads/2025/12/Shotting.png",
-            "/wp-content/uploads/2025/12/Skateboard.png",
-            "/wp-content/uploads/2025/12/Swim.png",
-            "/wp-content/uploads/2025/12/Tennis.png",
-            "/wp-content/uploads/2025/12/Football.png"
-        ],
-        "birthdays": []
-    }
-    </script>
-
-    <!-- ADMIN STUB (Commented) -->
-    <!-- 
-    <div id="admin-stub" class="container hidden">
-        <h2>Admin Dashboard (Stub)</h2>
-        <form id="noticeForm">
-            <input type="text" id="noticeTitle" placeholder="Notice Title">
-            <input type="text" id="noticeCategory" placeholder="Category">
-            <input type="date" id="noticeDate">
-            <textarea id="noticeBody" placeholder="Details"></textarea>
-            <input type="file" id="fileInput">
-            <button type="button">Upload & Save (Connect Firebase)</button>
-        </form>
-        <form id="birthdayForm">
-            <input type="text" id="bName" placeholder="Student Name">
-            <input type="text" id="bClass" placeholder="Class">
-            <input type="date" id="bDate">
-            <button type="button">Add Birthday</button>
-        </form>
-        // TODO: Wire up to Firebase Storage for file uploads and Firestore for data.
-    </div> 
-    -->
-
+    <!-- DYNAMIC SYSTEM SCRIPTS -->
     <script>
-        // --- UTILS ---
-        const $ = (selector) => document.querySelector(selector);
-        const $$ = (selector) => document.querySelectorAll(selector);
-        
-        // --- DEV MODE & ASSET LOGGING ---
-        const urlParams = new URLSearchParams(window.location.search);
-        const isDev = urlParams.get('dev') === '1' || localStorage.getItem('showMissing') === 'true';
-        const missingSet = new Set();
+        // --- 1. MOCK DATA (Simulating Firebase) ---
+        const noticesData = [
+            { type: 'Circulars', title: 'Holiday Announcement', date: '20 Jan', desc: 'School closed on 26th Jan for Republic Day.' },
+            { type: 'Circulars', title: 'Parent Teacher Meeting', date: '25 Jan', desc: 'Meeting for Class X students.' },
+            { type: 'Events', title: 'Annual Sports Day', date: '10 Feb', desc: 'Registration open for track events.' },
+            { type: 'Events', title: 'Science Exhibition', date: '28 Feb', desc: 'Projects submission deadline: 20 Feb.' }
+        ];
 
-        if (isDev) $('#dev-panel').style.display = 'block';
+        const birthdays = [
+            { name: "Aarav Kumar", class: "Class V - A", photo: "https://adhiyamanpublicschool.com/wp-content/plugins/elementor/assets/images/placeholder.png" },
+            // If empty, shows "No birthdays"
+        ];
 
-        function handleImageError(img) {
-            img.style.display = 'none'; // Hide broken image gracefully
-            // img.src = 'placeholder.png'; // Option: Replace with placeholder
-            const path = img.getAttribute('src');
-            if (path && !missingSet.has(path)) {
-                missingSet.add(path);
-                const li = document.createElement('li');
-                li.textContent = path;
-                $('#missing-list').appendChild(li);
-                if (isDev) console.warn('Missing asset:', path);
-            }
-        }
+        const galleryImages = [
+            "https://adhiyamanpublicschool.com/wp-content/uploads/2025/10/CAM06354-scaled.jpg",
+            "https://adhiyamanpublicschool.com/wp-content/uploads/2025/10/bg-1.jpg",
+            "https://adhiyamanpublicschool.com/wp-content/uploads/2025/10/1.png",
+            "https://adhiyamanpublicschool.com/wp-content/uploads/2025/10/77.jpg",
+            "https://adhiyamanpublicschool.com/wp-content/uploads/2025/10/CAM06232-300x200.jpg",
+            "https://adhiyamanpublicschool.com/wp-content/uploads/2025/10/CAM06507-300x200.jpg"
+        ];
 
-        // --- DATA LAYER ---
-        async function fetchContentMap(){ 
-            return JSON.parse(document.getElementById('content-map').textContent||'{}'); 
-        }
-        
-        async function fetchNotices(limit=6){ 
-            const map = await fetchContentMap(); 
-            return (map.notices||[]).slice(0,limit); 
-        }
-        
-        async function fetchBirthdays(date){ 
-            const map = await fetchContentMap(); 
-            return (map.birthdays||[]); 
-        }
+        // --- 2. INITIALIZATION ---
+        document.addEventListener('DOMContentLoaded', () => {
+            initScrollAnimations();
+            renderNotices();
+            renderBirthday();
+            renderGallery();
+            initHeaderScroll();
+            initCounter();
+        });
 
-        // --- TODO: FIREBASE INTEGRATION ---
-        /*
-        // Replace the above fetch functions with this structure:
-        // Paste your firebaseConfig object here.
-        // import { initializeApp } from "firebase/app";
-        // import { getFirestore, collection, query, orderBy, getDocs } from "firebase/firestore";
-        // import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
-        
-        // const app = initializeApp(firebaseConfig);
-        // const db = getFirestore(app);
-        
-        // async function fetchNoticesFirebase() {
-        //    const q = query(collection(db, 'notices'), orderBy('date', 'desc'));
-        //    const snap = await getDocs(q);
-        //    return snap.docs.map(d => d.data());
-        // }
-        */
-
-        // --- ANIMATION ENGINE ---
-        document.addEventListener('DOMContentLoaded', async () => {
-            
-            // 1. Populate Content
-            const map = await fetchContentMap();
-            
-            // Populate Gallery
-            const galleryTrack = $('#gallery-track');
-            const galleryClone = $('#gallery-track-clone');
-            const galleryHTML = map.gallery.map(src => 
-                `<div class="marquee-item"><img src="${src}" alt="Gallery" onerror="handleImageError(this)"></div>`
-            ).join('');
-            galleryTrack.innerHTML = galleryHTML;
-            galleryClone.innerHTML = galleryHTML; // Infinite scroll effect
-
-            // Populate Sports
-            const sportsList = $('#sports-list');
-            if(map.sports) {
-                sportsList.innerHTML = map.sports.map(src => 
-                    `<img src="${src}" style="width:50px; height:auto; filter: grayscale(100%); transition: filter 0.3s;" onmouseover="this.style.filter='grayscale(0)'" onmouseout="this.style.filter='grayscale(100%)'" onerror="handleImageError(this)">`
-                ).join('');
-            }
-
-            // 2. Scroll Reveal Observer
+        // --- 3. SCROLL ANIMATIONS ---
+        function initScrollAnimations() {
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('is-visible');
+                    if(entry.isIntersecting) {
+                        entry.target.classList.add('active');
                     }
                 });
             }, { threshold: 0.1 });
 
-            $$('.reveal-on-scroll').forEach(el => observer.observe(el));
+            document.querySelectorAll('.reveal, .reveal-left, .reveal-right, .scale-in').forEach(el => observer.observe(el));
+        }
 
-            // 3. Stats Counter
-            const statsSection = $('#stats-counter');
-            let counted = false;
-            const statsObserver = new IntersectionObserver((entries) => {
-                if(entries[0].isIntersecting && !counted) {
-                    counted = true;
-                    $$('.stat-item h3').forEach(el => {
-                        const target = +el.getAttribute('data-target');
-                        let count = 0;
-                        const inc = target / 50; // Speed
+        function initHeaderScroll() {
+            const header = document.getElementById('header');
+            window.addEventListener('scroll', () => {
+                if(window.scrollY > 50) header.classList.add('scrolled');
+                else header.classList.remove('scrolled');
+            });
+        }
+
+        // --- 4. RENDER FUNCTIONS ---
+        function renderNotices() {
+            const circularsContainer = document.getElementById('Circulars');
+            const eventsContainer = document.getElementById('Events');
+
+            noticesData.forEach(notice => {
+                const html = `
+                    <div class="notice-item">
+                        <div class="notice-date"><strong>${notice.date.split(' ')[0]}</strong><span>${notice.date.split(' ')[1]}</span></div>
+                        <div>
+                            <h4>${notice.title}</h4>
+                            <p class="text-sm text-gray">${notice.desc}</p>
+                        </div>
+                    </div>
+                `;
+                if(notice.type === 'Circulars') circularsContainer.innerHTML += html;
+                if(notice.type === 'Events') eventsContainer.innerHTML += html;
+            });
+        }
+
+        function renderBirthday() {
+            const container = document.getElementById('birthday-display');
+            if(birthdays.length > 0) {
+                const b = birthdays[0];
+                container.innerHTML = `
+                    <div class="bd-img-container"><img src="${b.photo}" alt="${b.name}"></div>
+                    <div class="bd-name">${b.name}</div>
+                    <div class="bd-class">${b.class}</div>
+                `;
+                startConfetti();
+            } else {
+                container.innerHTML = `<div class="bd-name" style="color:white; margin-top:2rem;">No Birthdays Today</div>`;
+            }
+        }
+
+        function renderGallery() {
+            const grid = document.getElementById('gallery-grid');
+            galleryImages.forEach(imgUrl => {
+                const item = document.createElement('div');
+                item.className = 'gallery-item reveal';
+                item.innerHTML = `
+                    <img src="${imgUrl}" alt="Gallery">
+                    <div class="gallery-overlay" onclick="openLightbox('${imgUrl}')">
+                        <div class="gallery-icon">+</div>
+                    </div>
+                `;
+                grid.appendChild(item);
+            });
+        }
+
+        // --- 5. UI INTERACTIONS ---
+        function openTab(evt, tabName) {
+            const content = document.querySelectorAll('.tab-content');
+            const btns = document.querySelectorAll('.tab-btn');
+            
+            content.forEach(c => c.classList.remove('active'));
+            btns.forEach(b => b.classList.remove('active'));
+            
+            document.getElementById(tabName).classList.add('active');
+            evt.currentTarget.classList.add('active');
+        }
+
+        function toggleMenu() {
+            document.getElementById('mobileNav').classList.toggle('active');
+        }
+
+        // Lightbox
+        const lightbox = document.getElementById('lightbox');
+        const lbImg = document.getElementById('lightbox-img');
+        
+        window.openLightbox = (src) => {
+            lbImg.src = src;
+            lightbox.classList.add('active');
+        }
+        
+        window.closeLightbox = () => {
+            lightbox.classList.remove('active');
+        }
+
+        // --- 6. COUNTER ANIMATION ---
+        function initCounter() {
+            const counters = document.querySelectorAll('.stat-number');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const target = +entry.target.getAttribute('data-target');
                         const updateCount = () => {
-                            count += inc;
-                            if(count < target) {
-                                el.innerText = Math.ceil(count);
-                                requestAnimationFrame(updateCount);
+                            const count = +entry.target.innerText;
+                            const inc = target / 100;
+                            if (count < target) {
+                                entry.target.innerText = Math.ceil(count + inc);
+                                setTimeout(updateCount, 20);
                             } else {
-                                el.innerText = target;
+                                entry.target.innerText = target;
                             }
                         };
                         updateCount();
-                    });
-                }
-            });
-            if(statsSection) statsObserver.observe(statsSection);
-
-            // 4. Hero Parallax (Mouse Move)
-            const hero = $('.hero');
-            const title = $('.hero-title');
-            if(!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-                hero.addEventListener('mousemove', (e) => {
-                    const x = (window.innerWidth - e.pageX * 2) / 100;
-                    const y = (window.innerHeight - e.pageY * 2) / 100;
-                    title.style.transform = `translateX(${x}px) translateY(${y}px)`;
-                });
-            }
-
-            // 5. Card 3D Tilt
-            $$('.info-card').forEach(card => {
-                card.addEventListener('mousemove', (e) => {
-                    const rect = card.getBoundingClientRect();
-                    const x = e.clientX - rect.left;
-                    const y = e.clientY - rect.top;
-                    card.style.transform = `
-                        perspective(1000px)
-                        rotateX(${-(y - rect.height/2) / 20}deg)
-                        rotateY(${(x - rect.width/2) / 20}deg)
-                        translateY(-10px)
-                    `;
-                });
-                card.addEventListener('mouseleave', () => {
-                    card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) translateY(0)';
+                        observer.unobserve(entry.target);
+                    }
                 });
             });
+            counters.forEach(c => observer.observe(c));
+        }
 
-            // 6. Header Scroll Compress
-            window.addEventListener('scroll', () => {
-                const header = $('header');
-                const scrollPercent = (window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100;
-                $('#scroll-progress').style.width = scrollPercent + '%';
-                
-                if (window.scrollY > 50) {
-                    header.classList.add('scrolled');
-                } else {
-                    header.classList.remove('scrolled');
-                }
-            });
-
-            // 7. Mobile Menu
-            const mobileToggle = $$('.mobile-toggle');
-            const mobileMenu = $('#mobile-menu');
-            mobileToggle.forEach(btn => {
-                btn.addEventListener('click', () => {
-                    mobileMenu.classList.toggle('active');
-                });
-            });
-            $$('#mobile-menu a').forEach(link => {
-                link.addEventListener('click', () => mobileMenu.classList.remove('active'));
-            });
-
-            // 8. Particle System (Canvas)
-            initParticles();
-        });
-
-        // --- PARTICLE SYSTEM LOGIC ---
-        function initParticles() {
-            const canvas = document.getElementById('particles');
-            if(!canvas) return;
+        // --- 7. SIMPLE CONFETTI ENGINE ---
+        function startConfetti() {
+            const canvas = document.getElementById('confetti-canvas');
             const ctx = canvas.getContext('2d');
-            let width, height;
-            let particles = [];
+            canvas.width = canvas.parentElement.offsetWidth;
+            canvas.height = canvas.parentElement.offsetHeight;
 
-            function resize() {
-                width = canvas.width = window.innerWidth;
-                height = canvas.height = window.innerHeight;
-            }
-            window.addEventListener('resize', resize);
-            resize();
+            const particles = [];
+            const colors = ['#fff', '#f00', '#0f0', '#00f', '#ff0', '#0ff'];
 
             class Particle {
                 constructor() {
-                    this.x = Math.random() * width;
-                    this.y = Math.random() * height;
-                    this.vx = (Math.random() - 0.5) * 0.5;
-                    this.vy = (Math.random() - 0.5) * 0.5;
-                    this.size = Math.random() * 3 + 1;
-                    this.color = `rgba(255, 255, 255, ${Math.random() * 0.5})`;
+                    this.x = Math.random() * canvas.width;
+                    this.y = Math.random() * canvas.height - canvas.height;
+                    this.w = Math.random() * 10 + 5;
+                    this.h = Math.random() * 5 + 5;
+                    this.color = colors[Math.floor(Math.random() * colors.length)];
+                    this.speed = Math.random() * 2 + 1;
+                    this.angle = Math.random() * 360;
+                    this.spin = Math.random() < 0.5 ? 1 : -1;
                 }
                 update() {
-                    this.x += this.vx;
-                    this.y += this.vy;
-                    if(this.x < 0) this.x = width;
-                    if(this.x > width) this.x = 0;
-                    if(this.y < 0) this.y = height;
-                    if(this.y > height) this.y = 0;
+                    this.y += this.speed;
+                    this.angle += this.spin;
+                    if(this.y > canvas.height) this.y = -10;
                 }
                 draw() {
+                    ctx.save();
+                    ctx.translate(this.x, this.y);
+                    ctx.rotate(this.angle * Math.PI / 180);
                     ctx.fillStyle = this.color;
-                    ctx.beginPath();
-                    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                    ctx.fill();
+                    ctx.fillRect(-this.w/2, -this.h/2, this.w, this.h);
+                    ctx.restore();
                 }
             }
 
             for(let i=0; i<50; i++) particles.push(new Particle());
 
-            function animate() {
-                ctx.clearRect(0, 0, width, height);
-                particles.forEach(p => {
-                    p.update();
-                    p.draw();
-                });
-                requestAnimationFrame(animate);
+            function loop() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                particles.forEach(p => { p.update(); p.draw(); });
+                requestAnimationFrame(loop);
             }
-            
-            // Respect reduced motion
-            if(!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-                animate();
-            }
+            loop();
         }
     </script>
 </body>
